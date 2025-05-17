@@ -3,12 +3,14 @@ import json
 import firebase_admin
 from firebase_admin import credentials, firestore
 
-# Lê a variável de ambiente que contém o JSON da chave de serviço
-service_account_info = json.loads(os.environ["FIREBASE_SERVICE_ACCOUNT_JSON"])
+# Corrige os caracteres \\n para \n na chave privada antes de fazer o parse
+raw_json = os.environ["FIREBASE_SERVICE_ACCOUNT_JSON"]
+fixed_json = raw_json.replace("\\n", "\n")
+service_account_info = json.loads(fixed_json)
 
-# Inicializa o Firebase com as credenciais da variável
+# Inicializa o app do Firebase
 cred = credentials.Certificate(service_account_info)
 firebase_admin.initialize_app(cred)
 
-# Cliente Firestore
+# Exporta o cliente do Firestore
 db = firestore.client()
